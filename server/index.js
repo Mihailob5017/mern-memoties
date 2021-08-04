@@ -2,6 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+// import 'dotenv/config';
+
+// ROUTES
+import postRoutes from './routes/posts.js';
 
 const app = express();
 const CONNECTION_URL =
@@ -31,5 +35,7 @@ mongoose
 	.catch((err) => {
 		console.error(err.message);
 	});
-
 mongoose.set('useFindAndModify', false);
+
+// Routing
+app.use('/posts', postRoutes);
