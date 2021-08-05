@@ -3,8 +3,13 @@ import { Paper, Button, Typography, TextField } from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import useStyles from './styles';
 
+// Redux
+import { useDispatch } from 'react-redux';
+import { createPost } from '../../redux/actions/posts';
 const Form = () => {
+	const dispatch = useDispatch();
 	const classes = useStyles();
+
 	const [postData, setPostData] = useState({
 		creator: '',
 		title: '',
@@ -12,7 +17,10 @@ const Form = () => {
 		tags: '',
 		selectedFile: '',
 	});
-	const handleSubmit = () => {};
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		dispatch(createPost(postData));
+	};
 
 	const handleChange = (state, element) => {
 		const { name, value } = element.target;
@@ -86,6 +94,7 @@ const Form = () => {
 					color='primary'
 					size='large'
 					type='submit'
+					onSubmit={handleSubmit}
 					fullWidth
 				>
 					Submit
