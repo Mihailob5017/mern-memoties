@@ -20,9 +20,9 @@ const Posts = ({ setCurrentId }) => {
 			alignItems='stretch'
 			className={classes.container}
 		>
-			{posts.map((post) => (
-				<Grid key={post.id} item xs={12} sm={6}>
-					<Post setCurrentId={setCurrentId} {...post} />
+			{posts.map((post, i) => (
+				<Grid key={i} item xs={12} sm={6}>
+					<Post key={post._id} setCurrentId={setCurrentId} {...post} />
 				</Grid>
 			))}
 		</Grid>
