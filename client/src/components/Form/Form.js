@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Paper, Button, Typography, TextField } from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import useStyles from './styles';
 
 // Redux
-import { useDispatch } from 'react-redux';
-import { createPost } from '../../redux/actions/posts';
-const Form = () => {
-	const dispatch = useDispatch();
-	const classes = useStyles();
+import { useDispatch, useSelector } from 'react-redux';
+import { createPost, updatePost } from '../../redux/actions/posts';
 
+const Form = ({ setCurrentId, currentId }) => {
+	const classes = useStyles();
+	const dispatch = useDispatch();
 	const [postData, setPostData] = useState({
 		creator: '',
 		title: '',
@@ -17,9 +17,21 @@ const Form = () => {
 		tags: '',
 		selectedFile: '',
 	});
+
+	const singlePost = useSelector((state) =>
+		currentId ? state.posts.find((post) => post._id === currentId) : null
+	);
+	console.log(currentId + ' is the id');
+
+	useEffect(() => {
+		if (singlePost) setPostData(singlePost);
+	}, [singlePost]);
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		dispatch(createPost(postData));
+		if (currentId) {
+			dispatch(updatePost(currentId, postData));
+			clearForm();
+		} else dispatch(createPost(postData));
 	};
 
 	const handleChange = (state, element) => {
@@ -29,15 +41,16 @@ const Form = () => {
 		});
 		return newState;
 	};
-	const clearForm = () =>
-		setPostData({
+	const clearForm = () => {
+		setCurrentId(null);
+		return setPostData({
 			creator: '',
 			title: '',
 			message: '',
 			tags: '',
 			selectedFile: '',
 		});
-
+	};
 	return (
 		<Paper className={classes.paper}>
 			<form
@@ -46,7 +59,9 @@ const Form = () => {
 				className={`${classes.form} ${classes.root}`}
 				onSubmit={handleSubmit}
 			>
-				<Typography variant='h6'>Creating a Memory</Typography>
+				<Typography variant='h6'>
+					{currentId ? 'Editing' : 'Creating'} a Memory
+				</Typography>
 				<TextField
 					name='creator'
 					variant='outlined'
