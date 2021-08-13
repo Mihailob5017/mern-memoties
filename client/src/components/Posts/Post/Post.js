@@ -61,6 +61,9 @@ const Post = ({
 			</div>
 			<CardContent>
 				<Typography className={classes.title} variant='h5' gutterBottom>
+					{title}
+				</Typography>
+				<Typography className={classes.title} component='p'>
 					{message}
 				</Typography>
 			</CardContent>
