@@ -2,14 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-// import 'dotenv/config';
+import dotenv from 'dotenv';
 
 // ROUTES
 import postRoutes from './routes/posts.js';
+dotenv.config();
 
 const app = express();
-const CONNECTION_URL =
-	'mongodb+srv://mixailo146:jsmv4183@cluster0.8yum2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const CONNECTION_URL = process.env.CONNECTION_URL;
+
 const PORT = process.env.PORT || 5000;
 
 // Maybe will have to do some research on this,since its depricaded
