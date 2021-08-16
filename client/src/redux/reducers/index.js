@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { postsReducer } from './posts';
+import auth from './auth';
 
 // REDUCER- TO FINALLY REMEMBER
 //
@@ -10,4 +11,5 @@ import { postsReducer } from './posts';
 //
 export default combineReducers({
 	posts: postsReducer,
+	auth,
 });
