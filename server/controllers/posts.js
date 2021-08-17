@@ -1,6 +1,6 @@
 // Instead of having all the complex logic inside the /routes page, we will be having it here
 import mongoose from 'mongoose';
-import PostMessage from '../models/postsMessage.js';
+import PostMessage from '../models/postsModel.js';
 
 export const getPosts = async (req, res) => {
 	try {

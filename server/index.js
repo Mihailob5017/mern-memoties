@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 
 // ROUTES
 import postRoutes from './routes/posts.js';
+import userRoutes from './routes/user.js';
 dotenv.config();
 
 const app = express();
@@ -40,3 +41,4 @@ mongoose.set('useFindAndModify', false);
 
 // Routing
 app.use('/posts', postRoutes);
+app.use('/user', userRoutes);
