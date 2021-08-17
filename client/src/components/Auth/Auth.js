@@ -13,12 +13,22 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import useStyles from './styles';
 // Components
 import Input from './Input';
-//Other
+// Redux
 import { useDispatch } from 'react-redux';
+import { signIn, signUp } from '../../redux/actions/auth';
+//Other
 import { GoogleLogin } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
 
 const Auth = () => {
+	// Initial State
+	const initialState = {
+		firstName: '',
+		lastName: '',
+		email: '',
+		password: '',
+		confirmPassword: '',
+	};
 	// Router Dom
 	const history = useHistory();
 	// Style
@@ -30,16 +40,30 @@ const Auth = () => {
 	// State
 	const [isSignup, switchSignup] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
+	const [formData, setFormData] = useState(initialState);
 
 	// State Handlers
-	const handleChange = () => {};
+	const handleChange = (state, element) => {
+		const { name, value } = element.target;
+		const newState = Object.assign({}, state, {
+			[name]: value,
+		});
+		return newState;
+	};
 	const switchMode = () => switchSignup(!isSignup);
 	const handleShowPassword = () => {
 		setShowPassword(!showPassword);
 	};
 
 	// Submit handlers
-	const handleSubmit = () => {};
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		if (isSignup) {
+			dispatch(signUp(formData, history));
+		} else {
+			dispatch(signIn(formData, history));
+		}
+	};
 
 	const GoogleSuccess = async (res) => {
 		const result = res?.profileObj;
@@ -78,25 +102,31 @@ const Auth = () => {
 									onChange={handleChange}
 									autoFocus
 									half
+									value={formData.firstName}
+									handleChange={(e) => setFormData(handleChange(formData, e))}
 								/>
 								<Input
 									name='lastName'
 									label='Last Name'
 									onChange={handleChange}
 									half
+									value={formData.lastName}
+									handleChange={(e) => setFormData(handleChange(formData, e))}
 								/>
 							</>
 						)}
 						<Input
 							name='email'
 							label='Email Address'
-							handleChange={handleChange}
+							value={formData.email}
+							handleChange={(e) => setFormData(handleChange(formData, e))}
 							type='email'
 						/>
 						<Input
 							name='password'
 							label='Password'
-							handleChange={handleChange}
+							value={formData.password}
+							handleChange={(e) => setFormData(handleChange(formData, e))}
 							type={showPassword ? 'text' : 'password'}
 							handleShowPassword={handleShowPassword}
 						/>
@@ -104,7 +134,8 @@ const Auth = () => {
 							<Input
 								name='confirmPassword'
 								label='Repeat Password'
-								handleChange={handleChange}
+								value={formData.confirmPassword}
+								handleChange={(e) => setFormData(handleChange(formData, e))}
 								type={showPassword ? 'text' : 'password'}
 								handleShowPassword={handleShowPassword}
 							/>
@@ -116,6 +147,7 @@ const Auth = () => {
 						color='primary'
 						className={classes.submit}
 						fullWidth
+						onSubmit={handleSubmit}
 					>
 						{isSignup ? 'Sign Up' : 'Sign in'}
 					</Button>
