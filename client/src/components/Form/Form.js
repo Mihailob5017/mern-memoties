@@ -8,10 +8,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createPost, updatePost } from '../../redux/actions/posts';
 
 const Form = ({ setCurrentId, currentId }) => {
+	const user = JSON.parse(localStorage.getItem('profile'));
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const [postData, setPostData] = useState({
-		creator: '',
 		title: '',
 		message: '',
 		tags: '',
@@ -29,9 +29,14 @@ const Form = ({ setCurrentId, currentId }) => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (currentId) {
-			dispatch(updatePost(currentId, postData));
+			dispatch(
+				updatePost(currentId, { ...postData, name: user?.result?.name })
+			);
 			clearForm();
-		} else dispatch(createPost(postData));
+		} else {
+			dispatch(createPost({ ...postData, name: user?.result?.name }));
+			clearForm();
+		}
 	};
 
 	const handleChange = (state, element) => {
@@ -44,13 +49,21 @@ const Form = ({ setCurrentId, currentId }) => {
 	const clearForm = () => {
 		setCurrentId(null);
 		return setPostData({
-			creator: '',
 			title: '',
 			message: '',
 			tags: '',
 			selectedFile: '',
 		});
 	};
+	if (!user?.result?.name) {
+		return (
+			<Paper className={classes.paper}>
+				<Typography variant='h6' align='center'>
+					Please Sign in to create memories
+				</Typography>
+			</Paper>
+		);
+	}
 	return (
 		<Paper className={classes.paper}>
 			<form
@@ -62,14 +75,6 @@ const Form = ({ setCurrentId, currentId }) => {
 				<Typography variant='h6'>
 					{currentId ? 'Editing' : 'Creating'} a Memory
 				</Typography>
-				<TextField
-					name='creator'
-					variant='outlined'
-					label='Creator'
-					fullWidth
-					value={postData.creator}
-					onChange={(e) => setPostData(handleChange(postData, e))}
-				/>
 				<TextField
 					name='title'
 					variant='outlined'

@@ -10,6 +10,7 @@ import {
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import ThumbUpAltOutlined from '@material-ui/icons/ThumbDownAltOutlined';
 import useStyles from './styles';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
@@ -19,7 +20,7 @@ const Post = ({
 	setCurrentId,
 	selectedFile,
 	title,
-	creator,
+	name,
 	createdAt,
 	tags,
 	message,
@@ -27,6 +28,7 @@ const Post = ({
 }) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
+	const user = JSON.parse(localStorage.getItem('profile'));
 
 	const handleDelete = () => {
 		dispatch(deletePost(_id));
@@ -36,11 +38,39 @@ const Post = ({
 		dispatch(likePost(_id));
 	};
 
+	const Likes = () => {
+		if (likeCount.length > 0) {
+			return likeCount.find(
+				(like) => like === (user?.result?.googleId || user?.result?._id)
+			) ? (
+				<>
+					<ThumbUpAltIcon fontSize='small' />
+					&nbsp;
+					{likeCount.length > 2
+						? `You and ${likeCount.length - 1} others`
+						: `${likeCount.length} like${likeCount.length > 1 ? 's' : ''}`}
+				</>
+			) : (
+				<>
+					<ThumbUpAltOutlined fontSize='small' />
+					&nbsp;{likeCount.length} {likeCount.length === 1 ? 'Like' : 'Likes'}
+				</>
+			);
+		}
+
+		return (
+			<>
+				<ThumbUpAltOutlined fontSize='small' />
+				&nbsp;Like
+			</>
+		);
+	};
+
 	return (
 		<Card className={classes.card}>
 			<CardMedia className={classes.media} image={selectedFile} title={title} />
 			<div className={classes.overlay}>
-				<Typography variant='h6'>{creator}</Typography>
+				<Typography variant='h6'>{name}</Typography>
 				<Typography variant='body2'>{moment(createdAt).fromNow()}</Typography>
 			</div>
 			<div className={classes.overlay2}>
@@ -68,10 +98,13 @@ const Post = ({
 				</Typography>
 			</CardContent>
 			<CardActionArea className={classes.CardAction}>
-				<Button size='small' color='primary' onClick={handleLike}>
-					<ThumbUpAltIcon fontSize='small' />
-
-					{likeCount}
+				<Button
+					size='small'
+					disabled={!user?.result}
+					color='primary'
+					onClick={handleLike}
+				>
+					<Likes />
 				</Button>
 				<Button size='small' color='primary' onClick={handleDelete}>
 					<DeleteIcon fontSize='small' />
