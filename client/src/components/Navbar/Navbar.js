@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import decode from 'jwt-decode';
 import { useHistory, useLocation } from 'react-router-dom';
 import memories from '../../images/memories.png';
 import useStyles from './styles';
@@ -13,7 +14,11 @@ const Navbar = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		const token = user?.token;
-		// JWT...
+		if (token) {
+			const decodedToken = decode(token);
+
+			if (decodedToken.exp * 1000 < new Date().getTime()) logoutHandler();
+		}
 		setUser(JSON.parse(localStorage.getItem('profile')));
 	}, [location]);
 
